@@ -6,6 +6,7 @@ from sumy.summarizers.lsa import LsaSummarizer
 from collections import Counter
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import subprocess
 
 from textblob import TextBlob
 
@@ -47,8 +48,8 @@ class SpacyTokenizer:
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
-    st.error("The spaCy model 'en_core_web_sm' is not installed. Run `python -m spacy download en_core_web_sm`.")
-    st.stop()
+    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+    nlp = spacy.load("en_core_web_sm")
 
 
 
