@@ -6,15 +6,13 @@ from sumy.summarizers.lsa import LsaSummarizer
 from collections import Counter
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-import subprocess
-
 from textblob import TextBlob
 
 # --- GENERAL SETTINGS ---
 favicon = "https://res.cloudinary.com/dvz16ceua/image/upload/v1738438460/favicon_rhnsk6.png"
 PAGE_TITLE = "MPDSIR | NLP Playground"
 
-# Find more emojis here: https://www.webfx.com/tools/emoji-cheat-sheet/
+# Set page configuration
 st.set_page_config(page_title=PAGE_TITLE, page_icon=favicon, layout="wide")
 
 # Custom CSS for styling
@@ -42,26 +40,21 @@ class SpacyTokenizer:
         doc = self.nlp(text)
         return [token.text for token in doc if not token.is_stop and token.is_alpha]  # Return words excluding stop words and punctuation
 
-
-
 # Load spaCy model for NLP tasks
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
-    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
-    nlp = spacy.load("en_core_web_sm")
-
-
+    st.error("The spaCy model 'en_core_web_sm' is not installed. Please ensure it is included in your requirements.txt.")
+    st.stop()
 
 # Set title
 st.title("NLP Playground")
-st.write("Explorez l'analyse de sentiment, le résumé de texte, la reconnaissance des entités nommées, l'extraction de mots-clés et la génération de nuages de mots . Explore Sentiment Analysis, Text Summarization, Named Entity Recognition, Keyword Extraction, and Word Cloud Generation!")
+st.write("Explorez l'analyse de sentiment, le résumé de texte, la reconnaissance des entités nommées, l'extraction de mots-clés et la génération de nuages de mots. Explore Sentiment Analysis, Text Summarization, Named Entity Recognition, Keyword Extraction, and Word Cloud Generation!")
 
 # User input text
 user_input = st.text_area("Entrez votre texte :", placeholder="Type or paste your text here...")
 
 # Sidebar options
-# Options dans la barre latérale
 with st.sidebar:
     st.header("Choisissez une fonctionnalité")
     options = st.multiselect(
@@ -71,7 +64,6 @@ with st.sidebar:
     )
 
 # 🔹 Analyse de sentiment (Utilisation de spaCy)
-
 if "Analyse de Sentiment" in options:
     st.subheader("Analyse de Sentiment")
     if user_input:
@@ -90,8 +82,6 @@ if "Analyse de Sentiment" in options:
     else:
         st.warning("Veuillez entrer un texte pour l'analyse de sentiment !")
 
-
-
 # 🔹 Résumé de texte (Utilisation du tokenizer spaCy)
 if "Résumé de Texte" in options:
     st.subheader("Résumé de Texte")
@@ -106,7 +96,6 @@ if "Résumé de Texte" in options:
     else:
         st.warning("Veuillez entrer un texte à résumer !")
 
-
 # 🔹 Reconnaissance des entités nommées (NER) avec spaCy
 if "Reconnaissance des Entités Nommées" in options:
     st.subheader("Reconnaissance des Entités Nommées")
@@ -117,7 +106,6 @@ if "Reconnaissance des Entités Nommées" in options:
         st.dataframe(pd.DataFrame(entities, columns=["Entité", "Catégorie"]))
     else:
         st.warning("Veuillez entrer un texte pour la reconnaissance des entités nommées !")
-
 
 # 🔹 Extraction de mots-clés (Utilisation de spaCy)
 if "Extraction de Mots-Clés" in options:
@@ -135,7 +123,6 @@ if "Extraction de Mots-Clés" in options:
             st.write(f"{i}. {keyword}")
     else:
         st.warning("Veuillez entrer un texte pour extraire des mots-clés !")
-
 
 # 🔹 Génération de nuage de mots
 if "Nuage de Mots" in options:
